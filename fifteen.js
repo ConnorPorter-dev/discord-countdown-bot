@@ -1,18 +1,24 @@
 const Discord = require('discord.js')
 const fs = require('fs')
 const util = require('util')
+const stream = require('stream');
+
 
 const fetch = require('node-fetch')
-const streamPipeline = util.promisify(require('stream').pipeline)
+const streamPipeline = util.promisify(stream.pipeline)
 
 const fifteenHandler = (msg, command) => {
-    let messageToSend = ""
+    let unfilteredText = ""
     command.forEach((word, index) => {
         if (index > 1) {
-            messageToSend += word + " "
+            unfilteredText += word + " "
         }
     })
-    console.log(messageToSend);
+    const messageToSend = unfilteredText.replace(/[^A-Z _.,!?:]/gi, '')
+
+    // console.log(unfilteredText);
+    // console.log(messageToSend);
+    
     if (messageToSend.length > 200) {
         msg.reply("Message too long, keep under 200 characters")
         return
@@ -23,7 +29,7 @@ const fifteenHandler = (msg, command) => {
             break;
     
         case "sponge":
-            getSponge()
+            getSponge(msg, messageToSend)
             break
 
         default:
@@ -34,7 +40,7 @@ const fifteenHandler = (msg, command) => {
     
 }
 
-const getSponge = async () => {
+const getSponge = async (msg, message) => {
     fetch("https://api.fifteen.ai/app/getAudioFile", {
         "headers": {
             "accept": "*/*",
@@ -65,18 +71,21 @@ const getSponge = async () => {
         },
         "referrer": "https://fifteen.ai/app",
         "referrerPolicy": "no-referrer-when-downgrade",
-        "body": "{\"text\":\"its ya boi spoonge boob.\",\"character\":\"SpongeBob\",\"emotion\":\"Neutral\"}",
+        "body": `{\"text\":\"${message}\",\"character\":\"SpongeBob\",\"emotion\":\"Neutral\"}`,
         "method": "POST",
         "mode": "cors"
       });
       
     if (!response.ok) throw new Error(`unexpected response ${response.statusText}`)
-    await streamPipeline(response.body, fs.createWriteStream('./audio/test2.wav'))
-  
+    await streamPipeline(response.body, fs.createWriteStream('./audio/test3.wav'))
+    console.log("File Created");
+    sendFile(msg)
+    
+    
 }
 
 const sendFile = (msg) => {
-    const attachment = new Discord.MessageAttachment("./audio/test.wav")
+    const attachment = new Discord.MessageAttachment("./audio/test3.wav", "The Sponge Prophesy.wav")
     msg.channel.send(attachment)
 }
 
