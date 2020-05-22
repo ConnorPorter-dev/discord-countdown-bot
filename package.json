@@ -1,6 +1,19 @@
 {
   "dependencies": {
     "discord.js": "^12.1.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "name": "discord-countdown-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/ConnorPorter-dev/discord-countdown-bot.git",
+  "author": "ConnorPorter-dev <52919851+ConnorPorter-dev@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.0.0"
   }
 }

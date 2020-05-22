@@ -1,29 +1,54 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
-require('dotenv').load();
+const Discord = require('discord.js')
+const bot = new Discord.Client()
+const cd = require("./basic.js")
+const fifteen = require("./fifteen.js")
 
-client.login(process.env.DISCORD_TOKEN);
+require('dotenv').config()
+
+bot.login(process.env.DISCORD_TOKEN);
 const id = ">"
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+// Logs to console when ready
+bot.on('ready', () => {
+  console.log(`Logged in as ${bot.user.tag}!`)
 });
 
-client.on('message', msg => {
+bot.on('message', msg => {
   //Prevents bot from responding to it's own message
   if (msg.author == bot.user) {
-    return;
-  }
-  // Checks starts with ID
-  if (!msg.startsWith(id)) {
     return
   }
-  // Remove ID from message
-  let command = message.content.substring(id.length).split(" ");
-  
-  switch (command[0]){
-    case "hello":
-      message.send("Hello There")
+  // Checks starts with ID
+  if (!msg.content.startsWith(id)) {
+    return
   }
+
+  // Logger
+  log(msg)
+
+  // Remove ID from message
+  let command = msg.content.substring(id.length).split(" ")
+  console.log(msg.content);
+  
+  console.log(command);
+  
+
+  // Base commands - can be accessed at all times
+  switch (command[0]){
+    case "countdown":
+     cd.coundownHandler(msg, command)
+     break
+    case "hello":
+      msg.reply("Fuck off")
+      break
+    case "15":
+      fifteen.fifteenHandler(msg, command)
+      break
+  }
+
 });
+
+const log = (msg) => {
+  console.log(msg.author.tag + msg.content)
+}
 
