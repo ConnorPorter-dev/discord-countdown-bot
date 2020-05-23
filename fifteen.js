@@ -80,8 +80,6 @@ const getSponge = async (msg, message) => {
     await streamPipeline(response.body, fs.createWriteStream('./audio/test3.wav'))
     console.log("File Created");
     sendFile(msg)
-    
-    
 }
 
 const sendFile = (msg) => {

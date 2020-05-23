@@ -41,6 +41,9 @@ bot.on('message', msg => {
     case "hello":
       msg.reply("Fuck off")
       break
+    case "help":
+      msg.reply("https://www.youtube.com/watch?v=2Q_ZzBGPdqE")
+      break
     case "15":
       fifteen.fifteenHandler(msg, command)
       break

@@ -15,7 +15,7 @@ const coundownHandler = (msg, command) => {
           msg.channel.send(getVowel())
           break
     
-        case "const":
+        case "cons":
           console.log(command[0])
           msg.channel.send(getConst())
           break
