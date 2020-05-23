@@ -1,23 +1,22 @@
 const Discord = require('discord.js')
 const fs = require('fs')
 const util = require('util')
-const stream = require('stream');
-
-
 const fetch = require('node-fetch')
+const stream = require('stream')
 const streamPipeline = util.promisify(stream.pipeline)
+
+const characters = ["SpongeBob", "Soldier", "Chell"]
 
 const fifteenHandler = (msg, command) => {
     let unfilteredText = ""
+
+    // Builds the message to send
     command.forEach((word, index) => {
         if (index > 1) {
             unfilteredText += word + " "
         }
     })
     const messageToSend = unfilteredText.replace(/[^A-Z _.,!?:]/gi, '')
-
-    // console.log(unfilteredText);
-    // console.log(messageToSend);
     
     if (messageToSend.length > 200) {
         msg.reply("Message too long, keep under 200 characters")
@@ -27,20 +26,22 @@ const fifteenHandler = (msg, command) => {
         case "test":
             sendFile(msg)
             break;
-    
-        case "sponge":
-            getSponge(msg, messageToSend)
-            break
 
         default:
-            msg.reply("Unknown command... Moron")
-            break;
+            if(characters.includes(command[1])){
+                generateAudio(msg, messageToSend, command[1])
+            }
+            else{
+                msg.reply("Unknown command... Moron")
+                break;
+            }
+            
     }
     
     
 }
 
-const getSponge = async (msg, message) => {
+const generateAudio = async (msg, message, character) => {
     fetch("https://api.fifteen.ai/app/getAudioFile", {
         "headers": {
             "accept": "*/*",
@@ -71,7 +72,7 @@ const getSponge = async (msg, message) => {
         },
         "referrer": "https://fifteen.ai/app",
         "referrerPolicy": "no-referrer-when-downgrade",
-        "body": `{\"text\":\"${message}\",\"character\":\"SpongeBob\",\"emotion\":\"Neutral\"}`,
+        "body": `{\"text\":\"${message}\",\"character\":\"${character}\",\"emotion\":\"Neutral\"}`,
         "method": "POST",
         "mode": "cors"
       });
@@ -83,7 +84,7 @@ const getSponge = async (msg, message) => {
 }
 
 const sendFile = (msg) => {
-    const attachment = new Discord.MessageAttachment("./audio/test3.wav", "The Sponge Prophesy.wav")
+    const attachment = new Discord.MessageAttachment("./audio/test3.wav", "15ai.wav")
     msg.channel.send(attachment)
 }
 
