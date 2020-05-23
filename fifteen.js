@@ -26,15 +26,28 @@ const fifteenHandler = (msg, command) => {
         case "test":
             sendFile(msg)
             break;
+        case "list":
+            msg.channel.send("List of characters: spongebob, glados, soldier, doctor")
+            msg.channel.send("Any other character on fifteen.ai can be added, just ask")
+            break;
+
+        case "spongebob":
+            generateAudio(msg, messageToSend, "SpongeBob")
+            break
+        case "glados":
+            generateAudio(msg, messageToSend, "GLaDOS")
+            break
+        case "soldier":
+            generateAudio(msg, messageToSend, "Soldier")
+            break
+        case "doctor":
+            generateAudio(msg, messageToSend, "Tenth Doctor")
+            break
 
         default:
-            if(characters.includes(command[1])){
-                generateAudio(msg, messageToSend, command[1])
-            }
-            else{
-                msg.reply("Unknown command... Moron")
-                break;
-            }
+            msg.reply("Unknown command... Moron")
+            break;
+            
             
     }
     
@@ -77,7 +90,10 @@ const generateAudio = async (msg, message, character) => {
         "mode": "cors"
       });
       
-    if (!response.ok) throw new Error(`unexpected response ${response.statusText}`)
+    if (!response.ok) {
+        msg.channel.send("There's been an error because the developer is incompetent")
+        throw new Error(`unexpected response ${response.statusText}`)
+    }
     await streamPipeline(response.body, fs.createWriteStream('./audio/test3.wav'))
     console.log("File Created");
     sendFile(msg)

@@ -37,16 +37,12 @@ bot.on('message', msg => {
 
   // Remove ID from message
   let command = msg.content.substring(id.length).split(" ")
-  console.log(msg.content);
-  
-  console.log(command);
-  
 
   // Base commands - can be accessed at all times
   switch (command[0]){
-    case "countdown":
-     cd.coundownHandler(msg, command)
-     break
+    // case "countdown":
+    //  cd.coundownHandler(msg, command)
+    //  break
     case "hello":
       msg.reply("Fuck off")
       break
