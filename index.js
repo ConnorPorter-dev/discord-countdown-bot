@@ -23,6 +23,15 @@ bot.on('message', msg => {
     return
   }
 
+  // Dev Mode configured with .env
+  if (process.env.DEV_MODE) {
+    if (msg.author.id != process.env.USER_ID) {
+      msg.reply("Currently Under Maintenance")
+      return
+    }
+  }
+  
+
   // Logger
   log(msg)
 
