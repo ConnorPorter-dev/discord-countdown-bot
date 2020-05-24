@@ -1,1 +1,1 @@
-worker: yarn start
+worker: mkdir audio && yarn start
