@@ -23,21 +23,26 @@ bot.on('message', msg => {
     return
   }
 
+  // Dev Mode configured with .env
+  if (process.env.DEV_MODE) {
+    if (msg.author.id != process.env.USER_ID) {
+      msg.reply("Currently Under Maintenance")
+      return
+    }
+  }
+  
+
   // Logger
   log(msg)
 
   // Remove ID from message
   let command = msg.content.substring(id.length).split(" ")
-  console.log(msg.content);
-  
-  console.log(command);
-  
 
   // Base commands - can be accessed at all times
   switch (command[0]){
-    case "countdown":
-     cd.coundownHandler(msg, command)
-     break
+    // case "countdown":
+    //  cd.coundownHandler(msg, command)
+    //  break
     case "hello":
       msg.reply("Fuck off")
       break
