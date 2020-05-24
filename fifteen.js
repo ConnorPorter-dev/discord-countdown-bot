@@ -5,8 +5,10 @@ const fetch = require('node-fetch')
 const stream = require('stream')
 const streamPipeline = util.promisify(stream.pipeline)
 
-const characters = ["SpongeBob", "Soldier", "Chell"]
+const audioDir = "./audio"
+const apiEndpoint = "https://api.fifteen.ai/app/getAudioFile"
 
+// Handles all fifteen.ai commands
 const fifteenHandler = (msg, command) => {
     let unfilteredText = ""
 
@@ -23,14 +25,10 @@ const fifteenHandler = (msg, command) => {
         return
     }
     switch (command[1]) {
-        case "test":
-            sendFile(msg)
-            break;
         case "list":
             msg.channel.send("List of characters: spongebob, glados, soldier, doctor")
             msg.channel.send("Any other character on fifteen.ai can be added, just ask")
             break;
-
         case "spongebob":
             generateAudio(msg, messageToSend, "SpongeBob")
             break
@@ -43,19 +41,18 @@ const fifteenHandler = (msg, command) => {
         case "doctor":
             generateAudio(msg, messageToSend, "Tenth Doctor")
             break
-
+        case "announcer":
+            generateAudio(msg, messageToSend, "Announcer")
+            break
         default:
             msg.reply("Unknown command... Moron")
             break;
-            
-            
     }
-    
-    
 }
 
+// Requests audio from api and saves file locally
 const generateAudio = async (msg, message, character) => {
-    fetch("https://api.fifteen.ai/app/getAudioFile", {
+    fetch(apiEndpoint, {
         "headers": {
             "accept": "*/*",
             "accept-language": "en-US,en;q=0.9",
@@ -71,7 +68,7 @@ const generateAudio = async (msg, message, character) => {
         "method": "OPTIONS",
         "mode": "cors"
     });
-    const response = await fetch("https://api.fifteen.ai/app/getAudioFile", {
+    const response = await fetch(apiEndpoint, {
         "headers": {
           "accept": "application/json, text/plain, */*",
           "accept-language": "en-US,en;q=0.9",
@@ -94,14 +91,18 @@ const generateAudio = async (msg, message, character) => {
         msg.channel.send("There's been an error because the developer is incompetent")
         throw new Error(`unexpected response ${response.statusText}`)
     }
-    await streamPipeline(response.body, fs.createWriteStream('./audio/test3.wav'))
+    await streamPipeline(response.body, fs.createWriteStream(`${audioDir}/${msg.author.id}.wav`))
     console.log("File Created");
     sendFile(msg)
 }
 
-const sendFile = (msg) => {
-    const attachment = new Discord.MessageAttachment("./audio/test3.wav", "15ai.wav")
-    msg.channel.send(attachment)
+// Sends the file on Discord and then removes the local file
+const sendFile = async (msg) => {
+    const attachment = new Discord.MessageAttachment(`${audioDir}/${msg.author.id}.wav`, "15ai.wav")
+    await msg.channel.send(attachment)
+    fs.unlink(`${audioDir}/${msg.author.id}.wav`,(err) => {
+        if (err) throw err;
+    })
 }
 
 module.exports = {
