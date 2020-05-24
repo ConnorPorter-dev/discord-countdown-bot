@@ -1,9 +1,3 @@
-# Discord Bot - Countdown Game 
-A simple discord bot to play the popular TV show Countdown
+# Fifteen.ai bot
+Discord bot that allows users to interact with the fifteen.ai api from within chat
 
-## To Add
-- Vowel/Const choice interaction with Discord
-- Vowel/Const generator
-- 30 Second Timer
-- Music? 
-- ....
