@@ -6,7 +6,7 @@ const stream = require('stream')
 const streamPipeline = util.promisify(stream.pipeline)
 
 const audioDir = "./audio"
-const apiEndpoint = "https://api.fifteen.ai/app/getAudioFile"
+const apiEndpoint = "https://api.15.ai/app/getAudioFile"
 
 // Handles all fifteen.ai commands
 const fifteenHandler = (msg, command) => {
@@ -19,18 +19,19 @@ const fifteenHandler = (msg, command) => {
         }
     })
     const messageToSend = unfilteredText.replace(/[^A-Z _.,!?:]/gi, '')
-    
+
     if (messageToSend.length > 200) {
         msg.reply("Message too long, keep under 200 characters")
         return
     }
     switch (command[1]) {
         case "list":
-            msg.channel.send("List of characters: spongebob, glados, soldier, doctor")
-            msg.channel.send("Any other character on fifteen.ai can be added, just ask")
+            msg.channel.send("List of characters: spongebob, glados, soldier, doctor, announcer, wheatley, portalturret, narrator")
+            msg.channel.send("Any other character on 15.ai can be added, just ask")
             break;
+        // TODO: TURN ALL THESE INTO A HASHMAP FOR MAINTAINABILITY
         case "spongebob":
-            generateAudio(msg, messageToSend, "SpongeBob")
+            generateAudio(msg, messageToSend, "SpongeBob SquarePants")
             break
         case "glados":
             generateAudio(msg, messageToSend, "GLaDOS")
@@ -43,6 +44,15 @@ const fifteenHandler = (msg, command) => {
             break
         case "announcer":
             generateAudio(msg, messageToSend, "Announcer")
+            break
+        case "wheatley":
+            generateAudio(msg, messageToSend, "Wheatley")
+            break
+        case "portalturret":
+            generateAudio(msg, messageToSend, "Sentry Turret")
+            break
+        case "narrator":
+            generateAudio(msg, messageToSend, "The Narrator")
             break
         default:
             msg.reply("Unknown command... Moron")
@@ -62,7 +72,7 @@ const generateAudio = async (msg, message, character) => {
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-site"
         },
-        "referrer": "https://fifteen.ai/app",
+        "referrer": "https://fifteen.ai/",
         "referrerPolicy": "no-referrer-when-downgrade",
         "body": null,
         "method": "OPTIONS",
@@ -70,23 +80,23 @@ const generateAudio = async (msg, message, character) => {
     });
     const response = await fetch(apiEndpoint, {
         "headers": {
-          "accept": "application/json, text/plain, */*",
-          "accept-language": "en-US,en;q=0.9",
-          "access-control-allow-origin": "*",
-          "cache-control": "no-cache",
-          "content-type": "application/json;charset=UTF-8",
-          "pragma": "no-cache",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-site"
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "en-US,en;q=0.9",
+            "access-control-allow-origin": "*",
+            "cache-control": "no-cache",
+            "content-type": "application/json;charset=UTF-8",
+            "pragma": "no-cache",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site"
         },
-        "referrer": "https://fifteen.ai/app",
+        "referrer": "https://15.ai/",
         "referrerPolicy": "no-referrer-when-downgrade",
-        "body": `{\"text\":\"${message}\",\"character\":\"${character}\",\"emotion\":\"Neutral\"}`,
+        "body": `{\"text\":\"${message}\",\"character\":\"${character}\",\"emotion\":\"Contextual\",\"use_diagonal\":true}`,
         "method": "POST",
         "mode": "cors"
-      });
-      
+    });
+
     if (!response.ok) {
         msg.channel.send("There's been an error because the developer is incompetent")
         throw new Error(`unexpected response ${response.statusText}`)
@@ -100,7 +110,7 @@ const generateAudio = async (msg, message, character) => {
 const sendFile = async (msg) => {
     const attachment = new Discord.MessageAttachment(`${audioDir}/${msg.author.id}.wav`, "15ai.wav")
     await msg.channel.send(attachment)
-    fs.unlink(`${audioDir}/${msg.author.id}.wav`,(err) => {
+    fs.unlink(`${audioDir}/${msg.author.id}.wav`, (err) => {
         if (err) throw err;
     })
 }
