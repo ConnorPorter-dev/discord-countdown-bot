@@ -44,7 +44,7 @@ bot.on('message', msg => {
     //  cd.coundownHandler(msg, command)
     //  break
     case "hello":
-      msg.reply("Fuck off")
+      msg.reply("Hello there")
       break
     case "help":
       msg.reply("https://www.youtube.com/watch?v=2Q_ZzBGPdqE")
@@ -57,6 +57,6 @@ bot.on('message', msg => {
 });
 
 const log = (msg) => {
-  console.log(msg.author.tag + msg.content)
+  console.log(`${msg.guild ? msg.guild.name : "DM"} | ${msg.author.tag} | ${msg.content}`)
 }
 
