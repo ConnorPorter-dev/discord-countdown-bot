@@ -20,8 +20,8 @@ const fifteenHandler = (msg, command) => {
     })
     const messageToSend = unfilteredText.replace(/[^A-Z _.,!?:]/gi, '')
 
-    if (messageToSend.length > 200) {
-        msg.reply("Message too long, keep under 200 characters")
+    if (messageToSend.length > 280) {
+        msg.reply("Message too long, keep under 280 characters")
         return
     }
     switch (command[1]) {
